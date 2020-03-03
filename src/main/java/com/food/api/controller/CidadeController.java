@@ -26,12 +26,10 @@ public class CidadeController {
 	@Autowired
 	private CadastroCidadeService cadastroCidadeService;
 
-
 	@GetMapping
-	public ResponseEntity<List<Cidade>> listar(){
+	public ResponseEntity<List<Cidade>> listar() {
 		return ResponseEntity.ok(cadastroCidadeService.listar());
 	}
-
 
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody Cidade cidade) {
@@ -42,13 +40,11 @@ public class CidadeController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
-	
-	
+
 	@PutMapping("/{cidadeId}")
-	public ResponseEntity<?> atualizar(@RequestBody Cidade cidade,
-										@PathVariable("cidadeId") Long id) {
+	public ResponseEntity<?> atualizar(@RequestBody Cidade cidade, @PathVariable("cidadeId") Long id) {
 		try {
-			cadastroCidadeService.atualizar(cidade,id);
+			cadastroCidadeService.atualizar(cidade, id);
 			return ResponseEntity.ok(cidade);
 		} catch (EntidadeEstadoNaoEncontradaException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -57,9 +53,8 @@ public class CidadeController {
 		}
 	}
 
-
 	@DeleteMapping("/{cidadeId}")
-	public ResponseEntity<?> remover(@PathVariable("cidadeId") Long id){
+	public ResponseEntity<?> remover(@PathVariable("cidadeId") Long id) {
 		try {
 			cadastroCidadeService.remover(id);
 			return ResponseEntity.noContent().build();
@@ -67,7 +62,5 @@ public class CidadeController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-
-
 
 }

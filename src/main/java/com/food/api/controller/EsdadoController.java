@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.domain.exception.EntidadeEmUsoException;
+import com.food.domain.exception.EntidadeException;
 import com.food.domain.exception.EntidadeEstadoNaoEncontradaException;
 import com.food.domain.model.Estado;
 import com.food.domain.service.CadastroEstadoService;
@@ -59,7 +59,7 @@ public class EsdadoController {
 			return ResponseEntity.noContent().build();
 		} catch (EntidadeEstadoNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
-		} catch (EntidadeEmUsoException ex) {
+		} catch (EntidadeException ex) {
 			return ResponseEntity.badRequest().body(ex.getMessage());
 		}
 	}

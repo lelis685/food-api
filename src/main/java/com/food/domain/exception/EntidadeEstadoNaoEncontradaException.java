@@ -1,6 +1,6 @@
 package com.food.domain.exception;
 
-public class EntidadeEstadoNaoEncontradaException extends EntidadeEmUsoException{
+public class EntidadeEstadoNaoEncontradaException extends EntidadeException{
 
 	
 	private static final long serialVersionUID = 1L;

@@ -1,11 +1,11 @@
 package com.food.domain.exception;
 
-public class EntidadeEmUsoException extends RuntimeException {
+public class EntidadeException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	
-	public EntidadeEmUsoException(String msg) {
+	public EntidadeException(String msg) {
 		super(msg);
 	}
 
