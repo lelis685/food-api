@@ -1,6 +1,7 @@
 package com.food.api.controller;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +35,20 @@ public class RestauranteController {
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
-
+	
+	
+	@GetMapping("busca-dinamica")
+	public List<Restaurante> find(String nome,BigDecimal taxaInicial, BigDecimal taxaFinal) {
+		return restauranteRepository.find(nome,taxaInicial, taxaFinal);
+	}
+	
+	
+	@GetMapping("buscar-nome-id")
+	public List<Restaurante> buscarPorNomeCozinhaID(String nome,Long id) {
+		return restauranteRepository.consultaPorNome(nome, id);
+	}
+	
+	
 	@GetMapping
 	public List<Restaurante> listar() {
 		return restauranteRepository.findAll();

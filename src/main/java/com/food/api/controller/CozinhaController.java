@@ -33,6 +33,13 @@ public class CozinhaController {
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
 
+	
+	@GetMapping(params = "nome")
+	public List<Cozinha> buscarPorNome(String nome) {
+		return cozinhaRepository.findByNomeContaining(nome);
+	}
+	
+	
 	@GetMapping
 	public List<Cozinha> listar() {
 		return cozinhaRepository.findAll();
