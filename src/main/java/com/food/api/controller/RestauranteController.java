@@ -37,13 +37,23 @@ public class RestauranteController {
 	private CadastroRestauranteService cadastroRestaurante;
 	
 	
-	@GetMapping("busca-dinamica")
+	@GetMapping("/primeiro")
+	public Restaurante buscarFreteGratis() {
+		return restauranteRepository.buscarPrimeiro().get();
+	}
+	
+	@GetMapping("/frete-gratis")
+	public List<Restaurante> buscarFreteGratis(String nome) {
+		return restauranteRepository.findComFreteGratis(nome);
+	}
+	
+	@GetMapping("/busca-dinamica")
 	public List<Restaurante> find(String nome,BigDecimal taxaInicial, BigDecimal taxaFinal) {
 		return restauranteRepository.find(nome,taxaInicial, taxaFinal);
 	}
 	
 	
-	@GetMapping("buscar-nome-id")
+	@GetMapping("/buscar-nome-id")
 	public List<Restaurante> buscarPorNomeCozinhaID(String nome,Long id) {
 		return restauranteRepository.consultaPorNome(nome, id);
 	}
