@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.food.domain.model.Restaurante;
@@ -22,5 +23,8 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	List<Restaurante> findTop2ByNomeContaining(String nome);
 	
 	boolean existsByNome(String nome);
+	
+	@Query(value = "FROM Restaurante r JOIN FETCH r.cozinha LEFT JOIN FETCH r.formasPagamento")
+	List<Restaurante> findAll();
 		
 }
