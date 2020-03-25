@@ -24,7 +24,7 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	
 	boolean existsByNome(String nome);
 	
-	@Query(value = "FROM Restaurante r JOIN FETCH r.cozinha LEFT JOIN FETCH r.formasPagamento")
+	@Query(value = "FROM Restaurante r JOIN FETCH r.cozinha")
 	List<Restaurante> findAll();
 		
 }
