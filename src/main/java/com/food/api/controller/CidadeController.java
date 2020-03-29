@@ -69,5 +69,10 @@ public class CidadeController {
 	public void remover(@PathVariable Long cidadeId) {
 		cadastroCidade.excluir(cidadeId);
 	}
+	
+	
+	
+	
+	
 
 }
