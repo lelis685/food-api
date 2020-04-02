@@ -2,6 +2,8 @@ package com.food.api.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,12 +43,12 @@ public class EsdadoController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody Estado estado) {
+	public Estado adicionar(@Valid @RequestBody Estado estado) {
 		return cadastroEstado.salvar(estado);
 	}
 
 	@PutMapping("/{estadoId}")
-	public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
+	public Estado atualizar(@PathVariable Long estadoId, @Valid @RequestBody Estado estado) {
 		Estado estadoAtual = cadastroEstado.buscar(estadoId);
 		BeanUtils.copyProperties(estado, estadoAtual, "id");
 		return cadastroEstado.salvar(estadoAtual);

@@ -24,7 +24,7 @@ public class ApiError {
 	@Default
 	private LocalDateTime timestamp = LocalDateTime.now();
 	
-	private List<Field> fields;
+	private List<Field> objects;
 	
 	
 	
