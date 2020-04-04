@@ -15,8 +15,6 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 																						JpaSpecificationExecutor<Restaurante> {
 
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
-
-	List<Restaurante> consultaPorNome(String nome, Long id);
 	
 	Optional<Restaurante> findFirstByNomeContaining(String nome);
 	
