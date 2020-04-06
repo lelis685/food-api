@@ -1,6 +1,6 @@
 package com.food.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,10 +19,10 @@ public class ApiError {
 	private String type;
 	private String title;
 	private String detail;
-	private  String userMessage;
+	private String userMessage;
 	
 	@Default
-	private LocalDateTime timestamp = LocalDateTime.now();
+	private OffsetDateTime timestamp = OffsetDateTime.now();
 	
 	private List<Field> objects;
 	

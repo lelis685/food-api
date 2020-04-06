@@ -1,6 +1,6 @@
 package com.food.domain.model;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class Usuario {
 
 	@CreationTimestamp
 	@Column(name = "data_cadastro")
-	private LocalDate dataCadastro;
+	private OffsetDateTime dataCadastro;
 
 	@ManyToMany
 	@JoinTable(name = "usuario_grupo", 
