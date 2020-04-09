@@ -19,19 +19,20 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
-	
+
 	@Autowired
 	private CadastroCidadeService cadastroCidadeService;
-	
+
 	@Autowired
 	private CadastroFormaPagamentoService cadastroFormaPagamentoService;
-	
+
+
 	@Transactional
 	public void ativar(Long id) {
 		Restaurante restaurante = buscar(id);
 		restaurante.ativar();
 	}
-	
+
 	@Transactional
 	public void inativar(Long id) {
 		Restaurante restaurante = buscar(id);
@@ -41,11 +42,11 @@ public class CadastroRestauranteService {
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
-	    Cozinha cozinha = cadastroCozinha.buscar(cozinhaId);
-	    
-	    Long cidadeID = restaurante.getEndereco().getCidade().getId();
+		Cozinha cozinha = cadastroCozinha.buscar(cozinhaId);
+
+		Long cidadeID = restaurante.getEndereco().getCidade().getId();
 		Cidade cidade = cadastroCidadeService.buscar(cidadeID);
-		
+
 		restaurante.getEndereco().setCidade(cidade);
 		restaurante.setCozinha(cozinha);
 
@@ -58,14 +59,15 @@ public class CadastroRestauranteService {
 		FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscar(formaPagamentoId);
 		restaurante.desassociarFormaPagamento(formaPagamento);
 	}
-	
+
 	@Transactional
 	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
 		Restaurante restaurante = buscar(restauranteId);
 		FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscar(formaPagamentoId);
 		restaurante.associarFormaPagamento(formaPagamento);
 	}
-	
+
+	@Transactional
 	public Restaurante buscar(Long id) {
 		return restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
 	}
