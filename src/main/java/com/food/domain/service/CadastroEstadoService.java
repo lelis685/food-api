@@ -31,15 +31,13 @@ public class CadastroEstadoService {
 			estadoRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new EstadoNaoEncontradoException(estadoId);
-
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, estadoId));
 		}
 	}
 
 	public Estado buscar(Long id) {
-		return estadoRepository.findById(id)
-				.orElseThrow(() -> new EstadoNaoEncontradoException(id));
+		return estadoRepository.findById(id).orElseThrow(() -> new EstadoNaoEncontradoException(id));
 	}
 
 }

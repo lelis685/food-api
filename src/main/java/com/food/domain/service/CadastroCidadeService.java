@@ -24,8 +24,7 @@ public class CadastroCidadeService {
 	private CadastroEstadoService cadastroEstado;
 
 	public Cidade buscar(Long id) {
-		return cidadeRepository.findById(id)
-				.orElseThrow(() -> new CidadeNaoEncontradaException(id));
+		return cidadeRepository.findById(id).orElseThrow(() -> new CidadeNaoEncontradaException(id));
 	}
 
 	@Transactional
@@ -33,7 +32,7 @@ public class CadastroCidadeService {
 		Long estadoId = cidade.getEstado().getId();
 
 		Estado estado = cadastroEstado.buscar(estadoId);
-	
+
 		cidade.setEstado(estado);
 
 		return cidadeRepository.save(cidade);
@@ -46,7 +45,6 @@ public class CadastroCidadeService {
 			cidadeRepository.flush();
 		} catch (EmptyResultDataAccessException e) {
 			throw new CidadeNaoEncontradaException(id);
-
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(String.format(MSG_CIDADE_EM_USO, id));
 		}

@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.api.assembler.RestauranteDtoAssembler;
+import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.assembler.RestauranteDtoInputDisassembler;
 import com.food.api.dto.RestauranteDto;
 import com.food.api.dto.input.RestauranteDtoInput;
+import com.food.domain.exception.CidadeNaoEncontradaException;
 import com.food.domain.exception.CozinhaNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Restaurante;
@@ -28,6 +30,8 @@ import com.food.domain.service.CadastroRestauranteService;
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
+	
+	private static final Class<RestauranteDto> RESTAURANTE_DTO_CLASS = RestauranteDto.class;
 
 	@Autowired
 	private RestauranteRepository restauranteRepository;
@@ -36,7 +40,7 @@ public class RestauranteController {
 	private CadastroRestauranteService cadastroRestaurante;
 	
 	@Autowired
-	private RestauranteDtoAssembler restauranteDtoAssembler;
+	private GenericDtoAssembler<Restaurante, RestauranteDto> assembler;
 	
 	@Autowired
 	private RestauranteDtoInputDisassembler restauranteDtoInputDisassembler;
@@ -45,14 +49,14 @@ public class RestauranteController {
 	@GetMapping
 	public List<RestauranteDto> listar() {
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
-		return restauranteDtoAssembler.toCollectionRepresentationModel(restaurantes);
+		return assembler.toCollectionRepresentationModel(restaurantes, RESTAURANTE_DTO_CLASS);
 	}
 
 	
 	@GetMapping("/{restauranteId}")
 	public RestauranteDto buscar(@PathVariable Long restauranteId) {
 		Restaurante restaurante = cadastroRestaurante.buscar(restauranteId);
-		return restauranteDtoAssembler.toRepresentationModel(restaurante);
+		return assembler.toRepresentationModel(restaurante, RESTAURANTE_DTO_CLASS);
 	}
 
 
@@ -61,8 +65,9 @@ public class RestauranteController {
 	public RestauranteDto adicionar(@Valid @RequestBody RestauranteDtoInput restauranteInput) {
 		try {
 			Restaurante restaurante = restauranteDtoInputDisassembler.toDomainObject(restauranteInput);
-			return restauranteDtoAssembler.toRepresentationModel(cadastroRestaurante.salvar(restaurante));
-		} catch (CozinhaNaoEncontradaException e) {
+			restaurante = cadastroRestaurante.salvar(restaurante);
+			return assembler.toRepresentationModel(restaurante, RESTAURANTE_DTO_CLASS);
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -74,14 +79,28 @@ public class RestauranteController {
 			Restaurante restauranteAtual = cadastroRestaurante.buscar(restauranteId);
 			
 			restauranteDtoInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
-			
-			return restauranteDtoAssembler.toRepresentationModel(cadastroRestaurante.salvar(restauranteAtual));
-		} catch (CozinhaNaoEncontradaException e) {
+		
+			restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
+		
+			return assembler.toRepresentationModel(restauranteAtual, RESTAURANTE_DTO_CLASS);
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
 	
 	
+	@PutMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable Long restauranteId) {
+		cadastroRestaurante.ativar(restauranteId);
+	}
+	
+	
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long restauranteId) {
+		cadastroRestaurante.inativar(restauranteId);
+	}
 
 
 }

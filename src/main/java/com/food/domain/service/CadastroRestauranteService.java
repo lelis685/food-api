@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.food.domain.exception.RestauranteNaoEncontradoException;
+import com.food.domain.model.Cidade;
 import com.food.domain.model.Cozinha;
+import com.food.domain.model.FormaPagamento;
 import com.food.domain.model.Restaurante;
 import com.food.domain.repository.RestauranteRepository;
 
@@ -17,18 +19,53 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
+	
+	@Autowired
+	private CadastroCidadeService cadastroCidadeService;
+	
+	@Autowired
+	private CadastroFormaPagamentoService cadastroFormaPagamentoService;
+	
+	@Transactional
+	public void ativar(Long id) {
+		Restaurante restaurante = buscar(id);
+		restaurante.ativar();
+	}
+	
+	@Transactional
+	public void inativar(Long id) {
+		Restaurante restaurante = buscar(id);
+		restaurante.inativar();
+	}
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
-
 	    Cozinha cozinha = cadastroCozinha.buscar(cozinhaId);
-
+	    
+	    Long cidadeID = restaurante.getEndereco().getCidade().getId();
+		Cidade cidade = cadastroCidadeService.buscar(cidadeID);
+		
+		restaurante.getEndereco().setCidade(cidade);
 		restaurante.setCozinha(cozinha);
 
 		return restauranteRepository.save(restaurante);
 	}
 
+	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscar(restauranteId);
+		FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscar(formaPagamentoId);
+		restaurante.desassociarFormaPagamento(formaPagamento);
+	}
+	
+	@Transactional
+	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
+		Restaurante restaurante = buscar(restauranteId);
+		FormaPagamento formaPagamento = cadastroFormaPagamentoService.buscar(formaPagamentoId);
+		restaurante.associarFormaPagamento(formaPagamento);
+	}
+	
 	public Restaurante buscar(Long id) {
 		return restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
 	}

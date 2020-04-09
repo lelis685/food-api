@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.api.assembler.EstadoDtoAssembler;
 import com.food.api.assembler.EstadoDtoInputDisassembler;
+import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.EstadoDto;
 import com.food.api.dto.input.EstadoDtoInput;
 import com.food.domain.model.Estado;
@@ -28,6 +28,8 @@ import com.food.domain.service.CadastroEstadoService;
 @RequestMapping("/estados")
 public class EsdadoController {
 	
+	private static final Class<EstadoDto> ESTADO_DTO_CLASS = EstadoDto.class;
+	
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -35,7 +37,7 @@ public class EsdadoController {
 	private CadastroEstadoService cadastroEstado;
 	
 	@Autowired
-	private EstadoDtoAssembler estadoDtoAssembler;
+	private GenericDtoAssembler<Estado, EstadoDto> assembler;
 	
 	@Autowired
 	private EstadoDtoInputDisassembler estadoDtoInputDisassembler;
@@ -43,13 +45,13 @@ public class EsdadoController {
 	
 	@GetMapping
 	public List<EstadoDto> listar() {
-		return estadoDtoAssembler.toCollectionRepresentationModel(estadoRepository.findAll());
+		return assembler.toCollectionRepresentationModel(estadoRepository.findAll(), ESTADO_DTO_CLASS);
 	}
 
 	
 	@GetMapping("/{estadoId}")
 	public EstadoDto buscar(@PathVariable Long estadoId) {
-		return estadoDtoAssembler.toRepresentationModel(cadastroEstado.buscar(estadoId));
+		return assembler.toRepresentationModel(cadastroEstado.buscar(estadoId), ESTADO_DTO_CLASS);
 	}
 
 	
@@ -57,7 +59,8 @@ public class EsdadoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDto adicionar(@Valid @RequestBody EstadoDtoInput estadoInput) {
 		Estado estado = estadoDtoInputDisassembler.toDomainObject(estadoInput);
-		return estadoDtoAssembler.toRepresentationModel(cadastroEstado.salvar(estado));
+		estado = cadastroEstado.salvar(estado);
+		return assembler.toRepresentationModel(estado, ESTADO_DTO_CLASS);
 	}
 
 	
@@ -68,7 +71,9 @@ public class EsdadoController {
 		
 		estadoDtoInputDisassembler.copyToDomainObject(estadoInput, estadoAtual);
 		
-		return estadoDtoAssembler.toRepresentationModel(cadastroEstado.salvar(estadoAtual));
+		estadoAtual = cadastroEstado.salvar(estadoAtual);
+		
+		return assembler.toRepresentationModel(estadoAtual, ESTADO_DTO_CLASS);
 	}
 
 	

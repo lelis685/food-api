@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.api.assembler.CozinhaDtoAssembler;
 import com.food.api.assembler.CozinhaDtoInputDisassembler;
+import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.CozinhaDto;
 import com.food.api.dto.input.CozinhaDtoInput;
 import com.food.domain.model.Cozinha;
@@ -27,6 +27,8 @@ import com.food.domain.service.CadastroCozinhaService;
 @RestController
 @RequestMapping(value = "/cozinhas")
 public class CozinhaController {
+	
+	private static final Class<CozinhaDto> COZINHA_DTO_CLASS = CozinhaDto.class;
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
@@ -35,7 +37,7 @@ public class CozinhaController {
 	private CadastroCozinhaService cadastroCozinha;
 	
 	@Autowired
-	private CozinhaDtoAssembler cozinhaDtoAssembler;
+	private GenericDtoAssembler<Cozinha, CozinhaDto> assembler;
 	
 	@Autowired
 	private CozinhaDtoInputDisassembler cozinhaDtoInputDisassembler;
@@ -43,24 +45,25 @@ public class CozinhaController {
 
 	@GetMapping(params = "nome")
 	public List<CozinhaDto> buscarPorNome(String nome) {
-		return cozinhaDtoAssembler.toCollectionRepresentationModel(cozinhaRepository.findByNomeContaining(nome));
+		return assembler.toCollectionRepresentationModel(cozinhaRepository.findByNomeContaining(nome), COZINHA_DTO_CLASS);
 	}
 
 	@GetMapping
 	public List<CozinhaDto> listar() {
-		return cozinhaDtoAssembler.toCollectionRepresentationModel(cozinhaRepository.findAll());
+		return assembler.toCollectionRepresentationModel(cozinhaRepository.findAll(), COZINHA_DTO_CLASS);
 	}
 
 	@GetMapping("/{cozinhaId}")
 	public CozinhaDto buscar(@PathVariable Long cozinhaId) {
-		return cozinhaDtoAssembler.toRepresentationModel(cadastroCozinha.buscar(cozinhaId));
+		return assembler.toRepresentationModel(cadastroCozinha.buscar(cozinhaId), COZINHA_DTO_CLASS);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaDto adicionar(@Valid @RequestBody CozinhaDtoInput cozinhaInput) {
 		Cozinha cozinha = cozinhaDtoInputDisassembler.toDomainObject(cozinhaInput);
-		return cozinhaDtoAssembler.toRepresentationModel(cadastroCozinha.salvar(cozinha));
+		cozinha = cadastroCozinha.salvar(cozinha);
+		return assembler.toRepresentationModel(cozinha, COZINHA_DTO_CLASS);
 	}
 
 	@PutMapping("/{cozinhaId}")
@@ -69,7 +72,9 @@ public class CozinhaController {
 		
 		cozinhaDtoInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
 		
-		return  cozinhaDtoAssembler.toRepresentationModel(cadastroCozinha.salvar(cozinhaAtual));
+		cozinhaAtual = cadastroCozinha.salvar(cozinhaAtual);
+		
+		return  assembler.toRepresentationModel(cozinhaAtual, COZINHA_DTO_CLASS);
 	}
 
 

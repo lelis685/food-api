@@ -46,5 +46,13 @@ public class Usuario {
 		joinColumns = @JoinColumn(name = "usuario_id"), 
 		inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	private List<Grupo> grupos = new ArrayList<>();
+	
+	public boolean isSenhaAtual(String senhaAtual) {
+		return this.senha.equals(senhaAtual);
+	}
+	
+	public static boolean isUsuarioDifferent(Usuario usuario, Usuario usuarioInput) {
+		return !usuario.equals(usuarioInput);
+	}
 
 }

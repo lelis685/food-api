@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.api.assembler.CidadeDtoAssembler;
 import com.food.api.assembler.CidadeDtoInputDisassembler;
+import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.CidadeDto;
 import com.food.api.dto.input.CidadeDtoInput;
 import com.food.domain.exception.EstadoNaoEncontradoException;
@@ -29,6 +29,8 @@ import com.food.domain.service.CadastroCidadeService;
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController {
+	
+	private static final Class<CidadeDto> CIDADE_DTO_CLASS = CidadeDto.class;
 
 	@Autowired
 	private CidadeRepository cidadeRepository;
@@ -37,21 +39,22 @@ public class CidadeController {
 	private CadastroCidadeService cadastroCidade;
 	
 	@Autowired
-	private CidadeDtoAssembler cidadeDtoAssembler;
+	private GenericDtoAssembler<Cidade, CidadeDto> assembler;
 	
 	@Autowired
 	private CidadeDtoInputDisassembler cidadeDtoInputDisassembler;
-
+	
 	
 	@GetMapping
 	public List<CidadeDto> listar() {
-		return cidadeDtoAssembler.toCollectionRepresentationModel(cidadeRepository.findAll());
+		return assembler.toCollectionRepresentationModel(cidadeRepository.findAll(),CIDADE_DTO_CLASS);
 	}
 	
 
 	@GetMapping("/{cidadeId}")
 	public CidadeDto buscar(@PathVariable Long cidadeId) {
-		return cidadeDtoAssembler.toRepresentationModel(cadastroCidade.buscar(cidadeId));
+		Cidade cidade = cadastroCidade.buscar(cidadeId);
+		return assembler.toRepresentationModel(cidade, CIDADE_DTO_CLASS);
 	}
 	
 
@@ -60,7 +63,8 @@ public class CidadeController {
 	public CidadeDto adicionar(@Valid @RequestBody CidadeDtoInput cidadeInput) {
 		try {
 			Cidade cidade = cidadeDtoInputDisassembler.toDomainObject(cidadeInput);
-			return cidadeDtoAssembler.toRepresentationModel(cadastroCidade.salvar(cidade));
+			cidade = cadastroCidade.salvar(cidade);
+			return assembler.toRepresentationModel(cidade, CIDADE_DTO_CLASS);
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -74,7 +78,10 @@ public class CidadeController {
 			
 			cidadeDtoInputDisassembler.copyToDomainObject(cidadeInput, cidadeAtual);
 			
-			return cidadeDtoAssembler.toRepresentationModel(cadastroCidade.salvar(cidadeAtual));
+			cidadeAtual = cadastroCidade.salvar(cidadeAtual);
+			
+			return assembler.toRepresentationModel(cidadeAtual,CIDADE_DTO_CLASS);
+			
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
