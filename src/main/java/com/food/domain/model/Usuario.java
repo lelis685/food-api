@@ -1,8 +1,8 @@
 package com.food.domain.model;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,14 +45,22 @@ public class Usuario {
 	@JoinTable(name = "usuario_grupo", 
 		joinColumns = @JoinColumn(name = "usuario_id"), 
 		inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-	private List<Grupo> grupos = new ArrayList<>();
+	private Set<Grupo> grupos = new HashSet<>();
 	
 	public boolean isSenhaAtual(String senhaAtual) {
 		return this.senha.equals(senhaAtual);
 	}
 	
-	public static boolean isUsuarioDifferent(Usuario usuario, Usuario usuarioInput) {
+	public boolean isUsuarioDifferent(Usuario usuario, Usuario usuarioInput) {
 		return !usuario.equals(usuarioInput);
+	}
+	
+	public boolean associarGrupo(Grupo grupo) {
+		return getGrupos().add(grupo);
+	}
+	
+	public boolean desassociarGrupo(Grupo grupo) {
+		return getGrupos().remove(grupo);
 	}
 
 }

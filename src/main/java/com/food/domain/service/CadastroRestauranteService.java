@@ -9,6 +9,7 @@ import com.food.domain.model.Cidade;
 import com.food.domain.model.Cozinha;
 import com.food.domain.model.FormaPagamento;
 import com.food.domain.model.Restaurante;
+import com.food.domain.model.Usuario;
 import com.food.domain.repository.RestauranteRepository;
 
 @Service
@@ -25,6 +26,9 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private CadastroFormaPagamentoService cadastroFormaPagamentoService;
+
+	@Autowired
+	private CadastroUsuarioService cadastroUsuarioService;
 
 
 	@Transactional
@@ -71,5 +75,33 @@ public class CadastroRestauranteService {
 	public Restaurante buscar(Long id) {
 		return restauranteRepository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
 	}
+
+	@Transactional
+	public void fechar(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.fechar();
+	}
+
+
+	@Transactional
+	public void abrir(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.abrir();
+	}
+
+	@Transactional
+	public void associarUsuario(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscar(restauranteId);
+		Usuario usuario = cadastroUsuarioService.buscar(usuarioId);
+		restaurante.associarUsuario(usuario);
+	}
+
+	@Transactional
+	public void desassociarUsuario(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscar(restauranteId);
+		Usuario usuario = cadastroUsuarioService.buscar(usuarioId);
+		restaurante.desassociarUsuario(usuario);
+	}
+
 
 }

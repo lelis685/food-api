@@ -1,9 +1,8 @@
 package com.food.domain.service;
 
-import static com.food.domain.model.Usuario.isUsuarioDifferent;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.food.domain.exception.NegocioException;
 import com.food.domain.exception.UsuarioNaoEncontradoException;
+import com.food.domain.model.Grupo;
 import com.food.domain.model.Usuario;
 import com.food.domain.repository.UsuarioRepository;
 
@@ -23,6 +23,8 @@ public class CadastroUsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
+	@Autowired
+	private CadastroGrupoService cadastroGrupoService;
 
 	public Usuario buscar(Long id) {
 		return usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
@@ -38,7 +40,7 @@ public class CadastroUsuarioService {
 		usuarioRepository.detach(usuario);
 		
 		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
-		if(usuarioExistente.isPresent() && isUsuarioDifferent(usuario, usuarioExistente.get()) ) {
+		if(usuarioExistente.isPresent() && usuario.isUsuarioDifferent(usuario, usuarioExistente.get()) ) {
 			throw new NegocioException(String.format(MSG_EMAIL_JA_EXISTENTE,usuario.getEmail()));
 		}else {
 			return usuarioRepository.save(usuario);
@@ -53,6 +55,26 @@ public class CadastroUsuarioService {
 		}else {
 			throw new NegocioException(MSG_SENHA_ATUAL_INVALIDA);
 		}
+	}
+
+	public Set<Grupo> listarGrupos(Long id) {
+		Usuario usuario = buscar(id);
+		return usuario.getGrupos();
+	}
+
+	@Transactional
+	public void desassociarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = buscar(usuarioId);
+		Grupo grupo = cadastroGrupoService.buscar(grupoId);
+		usuario.desassociarGrupo(grupo);
+		
+	}
+	
+	@Transactional
+	public void associarGrupo(Long usuarioId, Long grupoId) {
+		Usuario usuario = buscar(usuarioId);
+		Grupo grupo = cadastroGrupoService.buscar(grupoId);
+		usuario.associarGrupo(grupo);
 	}
 
 }

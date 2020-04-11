@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.assembler.UsuarioDtoInputDisassembler;
 import com.food.api.dto.UsuarioDto;
-import com.food.api.dto.input.UsuarioDtoInput;
-import com.food.api.dto.input.UsuarioComSenhaDtoInput;
 import com.food.api.dto.input.SenhaDtoInput;
+import com.food.api.dto.input.UsuarioComSenhaDtoInput;
+import com.food.api.dto.input.UsuarioDtoInput;
 import com.food.domain.model.Usuario;
 import com.food.domain.service.CadastroUsuarioService;
 
@@ -32,7 +32,7 @@ public class UsuarioController {
 
 	@Autowired
 	private GenericDtoAssembler<Usuario, UsuarioDto> assembler;
-
+	
 	@Autowired
 	private UsuarioDtoInputDisassembler diassembler;
 
@@ -78,6 +78,6 @@ public class UsuarioController {
 	public void alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaDtoInput usuarioInput){
 		cadastroUsuarioService.alterarSenha(id, usuarioInput.getSenhaAtual(), usuarioInput.getNovaSenha());
 	}
-
+	
 
 }
