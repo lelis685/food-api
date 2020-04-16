@@ -49,9 +49,9 @@ public class PedidoController {
         return assemblerPedidoResumoDto.toCollectionRepresentationModel(todosPedidos, PEDIDO_RESUMO_DTO_CLASS);
     }
     
-    @GetMapping("/{pedidoId}")
-    public PedidoDto buscar(@PathVariable Long pedidoId) {
-        Pedido pedido = emissaoPedidoService.buscar(pedidoId);
+    @GetMapping("/{codigoPedido}")
+    public PedidoDto buscar(@PathVariable String codigoPedido) {
+        Pedido pedido = emissaoPedidoService.buscar(codigoPedido);
         return assemblerPedidoDto.toRepresentationModel(pedido, PEDIDO_DTO_CLASS);
     }   
 	

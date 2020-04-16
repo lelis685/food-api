@@ -41,9 +41,9 @@ public class EmissaoPedidoService {
 	private CadastroUsuarioService cadastroUsuarioService;
 
 
-	public Pedido buscar(Long pedidoId) {
-		return pedidoRepository.findById(pedidoId)
-				.orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
+	public Pedido buscar(String codigoPedido) {
+		return pedidoRepository.findByCodigo(codigoPedido)
+				.orElseThrow(() -> new PedidoNaoEncontradoException(codigoPedido));
 	}
 
 	public List<Pedido> listar() {
@@ -57,7 +57,6 @@ public class EmissaoPedidoService {
 		pedido.calcularValorTotal();
 		return pedidoRepository.save(pedido);
 	}
-
 
 	private void validarPedido(Pedido pedido) {
 		Usuario cliente = cadastroUsuarioService.buscar(1L);
