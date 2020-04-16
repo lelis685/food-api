@@ -16,7 +16,7 @@
 	<description>API Delivery</description>
 
 	<properties>
-		<java.version>13</java.version>
+		<java.version>12</java.version>
 		<modelmapper.version>2.3.0</modelmapper.version>
 	</properties>
 

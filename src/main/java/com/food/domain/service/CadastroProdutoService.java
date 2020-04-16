@@ -26,6 +26,7 @@ public class CadastroProdutoService {
 		return produtoRepository.findById(restauranteId, produtoId)
 				.orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId, restauranteId));
 	} 
+	
 
 	public List<Produto> buscarProdutosPorRestaurante(Restaurante restaurante) {
 		return produtoRepository.findByRestaurante(restaurante);
