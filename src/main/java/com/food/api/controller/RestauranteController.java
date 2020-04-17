@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,21 +48,9 @@ public class RestauranteController {
 	@Autowired
 	private RestauranteDtoInputDisassembler restauranteDtoInputDisassembler;
 
-
-	@GetMapping
-	public MappingJacksonValue listarCompleto(@RequestParam(required = false) String projecao) {
-		List<Restaurante> restaurantes = restauranteRepository.findAll();
-		List<RestauranteDto> restaurantesDto = assembler.toCollectionRepresentationModel(restaurantes, RESTAURANTE_DTO_CLASS);
-		MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(restaurantesDto);
-		if("completo".equals(projecao)) {
-			mappingJacksonValue.setSerializationView(RestauranteView.ApenasNome.class);
-		}
-		return mappingJacksonValue;
-	}
-
-
+	
 	@JsonView(RestauranteView.Resumo.class)
-	@GetMapping(params = "projecao=resumo")
+	@GetMapping
 	public List<RestauranteDto> listarResumido() {
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
 		return assembler.toCollectionRepresentationModel(restaurantes, RESTAURANTE_DTO_CLASS);
