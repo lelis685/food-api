@@ -1,7 +1,6 @@
 package com.food.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class Pedido {
 	private StatusPedido status = StatusPedido.CRIADO;
 
 	@CreationTimestamp
-	private LocalDateTime dataCriacao;
+	private OffsetDateTime dataCriacao;
 
 	private OffsetDateTime dataConfirmacao;
 	private OffsetDateTime dataCancelamento;

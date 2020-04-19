@@ -27,10 +27,13 @@ public class CadastroProdutoService {
 				.orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId, restauranteId));
 	} 
 	
-
 	public List<Produto> buscarProdutosPorRestaurante(Restaurante restaurante) {
 		return produtoRepository.findByRestaurante(restaurante);
 	} 
-
+	
+	public List<Produto> buscarProdutosAtivoPorRestaurante(Restaurante restaurante) {
+		return produtoRepository.findAtivoByRestaurante(restaurante);
+	} 
+	
 
 }

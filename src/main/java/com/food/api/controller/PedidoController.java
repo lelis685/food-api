@@ -22,7 +22,10 @@ import com.food.api.dto.input.PedidoDtoInput;
 import com.food.domain.exception.EntidadeNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Pedido;
+import com.food.domain.repository.PedidoRepository;
+import com.food.domain.repository.filter.PedidoFilter;
 import com.food.domain.service.EmissaoPedidoService;
+import com.food.infrastructure.repository.specification.PedidosSpec;
 
 
 
@@ -35,6 +38,9 @@ public class PedidoController {
 
 	@Autowired
 	private EmissaoPedidoService emissaoPedidoService;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	@Autowired
 	private GenericDtoAssembler<Pedido, PedidoDto> assemblerPedidoDto;
@@ -46,10 +52,9 @@ public class PedidoController {
 	private PedidoDtoInputDisassembler disassembler;
 
 	@GetMapping
-	public List<PedidoResumoDto> listar() {
-		List<Pedido> todosPedidos = emissaoPedidoService.listar();
-		List<PedidoResumoDto> todosPedidosDto = assemblerPedidoResumoDto.toCollectionRepresentationModel(todosPedidos, PEDIDO_RESUMO_DTO_CLASS);
-		return todosPedidosDto;
+	public List<PedidoResumoDto> listar(PedidoFilter filtro) {
+		List<Pedido> todosPedidos = pedidoRepository.findAll(PedidosSpec.usandoFiltro(filtro));
+		return assemblerPedidoResumoDto.toCollectionRepresentationModel(todosPedidos, PEDIDO_RESUMO_DTO_CLASS);
 	}
 
 

@@ -1,5 +1,6 @@
 package com.food.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,9 +46,14 @@ public class RestauranteProdutoController {
 
 
 	@GetMapping
-	public List<ProdutoDto> listar(@PathVariable Long restauranteId) {
+	public List<ProdutoDto> listar(@PathVariable Long restauranteId, @RequestParam(defaultValue = "false") boolean incluirInativos) {
 		Restaurante restaurante = cadastroRestaurante.buscar(restauranteId);
-		List<Produto> todosProdutos = cadastroProdutoService.buscarProdutosPorRestaurante(restaurante);
+		List<Produto> todosProdutos = new ArrayList<Produto>();
+		if(incluirInativos) {
+			todosProdutos = cadastroProdutoService.buscarProdutosPorRestaurante(restaurante);
+		}else {
+			todosProdutos = cadastroProdutoService.buscarProdutosAtivoPorRestaurante(restaurante);
+		}
 		return assembler.toCollectionRepresentationModel(todosProdutos, PRODUTO_DTO_CLASS);
 	}
 
