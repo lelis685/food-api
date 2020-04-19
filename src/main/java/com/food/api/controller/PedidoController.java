@@ -5,6 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +22,7 @@ import com.food.api.assembler.PedidoDtoInputDisassembler;
 import com.food.api.dto.PedidoDto;
 import com.food.api.dto.PedidoResumoDto;
 import com.food.api.dto.input.PedidoDtoInput;
+import com.food.core.data.PageableTranslator;
 import com.food.domain.exception.EntidadeNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Pedido;
@@ -26,6 +30,7 @@ import com.food.domain.repository.PedidoRepository;
 import com.food.domain.repository.filter.PedidoFilter;
 import com.food.domain.service.EmissaoPedidoService;
 import com.food.infrastructure.repository.specification.PedidosSpec;
+import com.google.common.collect.ImmutableMap;
 
 
 
@@ -38,7 +43,7 @@ public class PedidoController {
 
 	@Autowired
 	private EmissaoPedidoService emissaoPedidoService;
-	
+
 	@Autowired
 	private PedidoRepository pedidoRepository;
 
@@ -52,9 +57,19 @@ public class PedidoController {
 	private PedidoDtoInputDisassembler disassembler;
 
 	@GetMapping
-	public List<PedidoResumoDto> listar(PedidoFilter filtro) {
-		List<Pedido> todosPedidos = pedidoRepository.findAll(PedidosSpec.usandoFiltro(filtro));
-		return assemblerPedidoResumoDto.toCollectionRepresentationModel(todosPedidos, PEDIDO_RESUMO_DTO_CLASS);
+	public Page<PedidoResumoDto> listar(PedidoFilter filtro, Pageable pageable) {
+
+		pageable = traduzirPageable(pageable);
+
+		Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidosSpec.usandoFiltro(filtro), pageable);
+
+		List<PedidoResumoDto> pedidosResumoDto = 
+				assemblerPedidoResumoDto.toCollectionRepresentationModel(pedidosPage.getContent(), PEDIDO_RESUMO_DTO_CLASS);
+
+		Page<PedidoResumoDto> pedidosResumoDtoPage = new PageImpl<>(pedidosResumoDto, pageable, pedidosPage.getTotalElements());
+
+		return pedidosResumoDtoPage;
+
 	}
 
 
@@ -77,6 +92,12 @@ public class PedidoController {
 		}
 	}   
 
+
+	private Pageable traduzirPageable(Pageable pageable) {
+		ImmutableMap<String, String> mapeamento = ImmutableMap.of(
+				"nomeCliente", "cliente.nome");
+		return PageableTranslator.translate(pageable, mapeamento);
+	}
 
 
 }
