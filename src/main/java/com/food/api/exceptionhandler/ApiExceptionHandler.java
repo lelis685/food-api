@@ -58,7 +58,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 	
-
 	@ExceptionHandler({ ValidacaoException.class })
 	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
 		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), 

@@ -33,7 +33,7 @@ public class VendaReportServiceImpl implements VendaReportService {
 			InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/vendas-diarias.jasper");
 
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("REPORT_LOCA", new Locale("pt", "BR"));
+			parameters.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
 			List<VendaDiaria> vendasDiarias = vendaQueryService.consultaVendasDiarias(filter, timeOffset);
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(vendasDiarias);
