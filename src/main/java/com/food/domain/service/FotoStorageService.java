@@ -1,4 +1,4 @@
-package com.food.domain.repository;
+package com.food.domain.service;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -8,7 +8,7 @@ import lombok.Getter;
 
 public interface FotoStorageService {
 	
-	InputStream recuperar(String nomeArquivo);
+	FotoRecuperada recuperar(String nomeArquivo);
 	
 	void armazenar(NovaFoto novaFoto);
 	
@@ -29,7 +29,25 @@ public interface FotoStorageService {
 	@Builder
 	class NovaFoto{
 		private String nomeArquivo;
+		private String contentType;
 		private InputStream inputStream;
 	}
+	
+	
+	@Getter
+	@Builder
+	public class FotoRecuperada{
+		private InputStream inputStream;
+		private String url;
+		
+		public boolean temUrl() {
+			return url != null;
+		}
+		
+		public boolean temInputStreamrl() {
+			return inputStream != null;
+		}
+	}
+
 	
 }
