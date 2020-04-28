@@ -1,11 +1,14 @@
 package com.food.api.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,62 +29,70 @@ import com.food.domain.service.CadastroFormaPagamentoService;
 @RestController
 @RequestMapping("/formas-pagamento")
 public class FormaPagamentoController {
-	
+
 	private static final Class<FormaPagamentoDto> FORMA_PAGAMENTO_DTO_CLASS = FormaPagamentoDto.class;
-	
+
 	@Autowired
 	private CadastroFormaPagamentoService cadastroFormaPagamentoService;
-	
+
 	@Autowired
 	private GenericDtoAssembler<FormaPagamento, FormaPagamentoDto> assembler;
-	
+
 	@Autowired
 	private FormaPagamentoDtoInputDisassembler diassembler;
-	
+
 
 	@GetMapping
-	public List<FormaPagamentoDto> listar(){
-		return assembler
-				.toCollectionRepresentationModel(cadastroFormaPagamentoService.listar(), FORMA_PAGAMENTO_DTO_CLASS);
+	public ResponseEntity<List<FormaPagamentoDto>> listar(){
+		List<FormaPagamentoDto> formaPagamentos = 
+				assembler.toCollectionRepresentationModel(cadastroFormaPagamentoService.listar(), FORMA_PAGAMENTO_DTO_CLASS);
+
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10,TimeUnit.SECONDS))
+				.body(formaPagamentos);
 	}
-	
-	
+
+
 	@GetMapping("/{id}")
-	public FormaPagamentoDto bucar(@PathVariable Long id){
-		return assembler.toRepresentationModel(cadastroFormaPagamentoService.buscar(id), 
-						FORMA_PAGAMENTO_DTO_CLASS);
+	public ResponseEntity<FormaPagamentoDto> bucar(@PathVariable Long id){
+		FormaPagamentoDto pagamentoDto = 
+				assembler.toRepresentationModel(cadastroFormaPagamentoService.buscar(id), FORMA_PAGAMENTO_DTO_CLASS);
+		
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10,TimeUnit.SECONDS))
+				.body(pagamentoDto);
 	}
-	
-	
+
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDto salvar(@Valid @RequestBody FormaPagamentoDtoInput formaPagamentoInput ){
-		
+
 		FormaPagamento formaPagamento = cadastroFormaPagamentoService.salvar(
 				diassembler.toDomainObject(formaPagamentoInput));
-		
+
 		return assembler.toRepresentationModel(formaPagamento,FORMA_PAGAMENTO_DTO_CLASS);
 	}
-	
-	
+
+
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDto atualizar(@PathVariable Long id, @Valid @RequestBody FormaPagamentoDtoInput formaPagamentoInput){
-		
+
 		FormaPagamento formaPagamentoAtual = cadastroFormaPagamentoService.buscar(id);
-		
+
 		diassembler.copyToDomainObject(formaPagamentoInput, formaPagamentoAtual);
-		
+
 		formaPagamentoAtual = cadastroFormaPagamentoService.salvar(formaPagamentoAtual);
-		
+
 		return assembler.toRepresentationModel(formaPagamentoAtual,FORMA_PAGAMENTO_DTO_CLASS);
 	}
-	
-	
+
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluir(@PathVariable Long id){
 		cadastroFormaPagamentoService.excluir(id);
 	}
-	
+
 }
