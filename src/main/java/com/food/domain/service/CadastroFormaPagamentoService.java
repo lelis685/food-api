@@ -1,5 +1,6 @@
 package com.food.domain.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,12 @@ public class CadastroFormaPagamentoService {
 
 	@Autowired
 	private FormaPagamentoRepository formaPagamentoRepository;
+	
+	
+	public OffsetDateTime buscarUltimaDataAtualizacao() {
+		return formaPagamentoRepository.getUltimaDataAtualizacao();
+	}
+
 
 	public List<FormaPagamento> listar() {
 		return formaPagamentoRepository.findAll();
@@ -44,6 +51,11 @@ public class CadastroFormaPagamentoService {
 		}catch (EmptyResultDataAccessException e) {
 			throw new FormaPagamentoNaoEncontradaException(id);
 		}
+	}
+
+
+	public OffsetDateTime buscarDataAtualizacaoById(Long id) {
+		return formaPagamentoRepository.getDataAtualizacaoById(id);
 	}
 
 }
