@@ -82,7 +82,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 			HttpStatus status, WebRequest request) {
 		String detail  = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
-		List<Field> apiErrorObjects = bindingResult.getAllErrors().stream()
+		List<com.food.api.exceptionhandler.ApiError.Object> apiErrorObjects = bindingResult.getAllErrors().stream()
 				.map(objectError ->{ 
 
 					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
@@ -93,7 +93,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 						name = ((FieldError )objectError).getField();
 					}
 
-					return Field.builder()
+					return com.food.api.exceptionhandler.ApiError.Object.builder()
 							.name(name)
 							.userMessage(message)
 							.build();

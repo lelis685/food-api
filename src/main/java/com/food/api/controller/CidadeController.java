@@ -26,10 +26,15 @@ import com.food.domain.model.Cidade;
 import com.food.domain.repository.CidadeRepository;
 import com.food.domain.service.CadastroCidadeService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags="Cidades")
 @RestController
 @RequestMapping("/cidades")
 public class CidadeController {
-	
+
 	private static final Class<CidadeDto> CIDADE_DTO_CLASS = CidadeDto.class;
 
 	@Autowired
@@ -37,30 +42,32 @@ public class CidadeController {
 
 	@Autowired
 	private CadastroCidadeService cadastroCidade;
-	
+
 	@Autowired
 	private GenericDtoAssembler<Cidade, CidadeDto> assembler;
-	
+
 	@Autowired
 	private CidadeDtoInputDisassembler cidadeDtoInputDisassembler;
-	
-	
+
+	@ApiOperation(value = "Lista as cidades")
 	@GetMapping
 	public List<CidadeDto> listar() {
 		return assembler.toCollectionRepresentationModel(cidadeRepository.findAll(),CIDADE_DTO_CLASS);
 	}
-	
 
+	@ApiOperation(value = "Busca uma cidade por id")
 	@GetMapping("/{cidadeId}")
-	public CidadeDto buscar(@PathVariable Long cidadeId) {
+	public CidadeDto buscar(@ApiParam(value = "ID de uma cidade", example = "1") 
+							@PathVariable Long cidadeId) {
 		Cidade cidade = cadastroCidade.buscar(cidadeId);
 		return assembler.toRepresentationModel(cidade, CIDADE_DTO_CLASS);
 	}
-	
 
+	@ApiOperation(value = "Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDto adicionar(@Valid @RequestBody CidadeDtoInput cidadeInput) {
+	public CidadeDto adicionar(@ApiParam(name = "corpo", value = "Representação de uma nova cidade") 
+								@Valid @RequestBody CidadeDtoInput cidadeInput) {
 		try {
 			Cidade cidade = cidadeDtoInputDisassembler.toDomainObject(cidadeInput);
 			cidade = cadastroCidade.salvar(cidade);
@@ -70,29 +77,34 @@ public class CidadeController {
 		}
 	}
 
-	
+	@ApiOperation(value = "Atualiza uma cidade por id")
 	@PutMapping("/{cidadeId}")
-	public CidadeDto atualizar(@PathVariable Long cidadeId, @Valid @RequestBody CidadeDtoInput cidadeInput) {
+	public CidadeDto atualizar(
+			@ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados") 
+			@Valid @RequestBody CidadeDtoInput cidadeInput , 
+			@ApiParam(value = "ID de uma cidade", example = "1") 
+			@PathVariable Long cidadeId ) {
 		try {
 			Cidade cidadeAtual = cadastroCidade.buscar(cidadeId);
-			
+
 			cidadeDtoInputDisassembler.copyToDomainObject(cidadeInput, cidadeAtual);
-			
+
 			cidadeAtual = cadastroCidade.salvar(cidadeAtual);
-			
+
 			return assembler.toRepresentationModel(cidadeAtual,CIDADE_DTO_CLASS);
-			
+
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 
-	
+	@ApiOperation(value = "Exclui uma cidade por id")
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@PathVariable Long cidadeId) {
+	public void remover(@ApiParam(value = "ID de uma cidade", example = "1") 
+						@PathVariable Long cidadeId) {
 		cadastroCidade.excluir(cidadeId);
 	}
-	
+
 
 }
