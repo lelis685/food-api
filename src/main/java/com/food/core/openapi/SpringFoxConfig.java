@@ -18,6 +18,7 @@ import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.ResponseMessage;
@@ -77,6 +78,7 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 		return Arrays.asList(
 				new ResponseMessageBuilder()
 					.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+					 .responseModel(new ModelRef("Problema"))
 					.message("Erro interno do servidor")
 					.build(),
 				new ResponseMessageBuilder()
@@ -93,13 +95,16 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	
 	
 	private List<ResponseMessage> globalPostPutResponseMessages() {
-	    return Arrays.asList(
+	   
+		return Arrays.asList(
 	            new ResponseMessageBuilder()
 	                .code(HttpStatus.BAD_REQUEST.value())
 	                .message("Requisição inválida (erro do cliente)")
+	                .responseModel(new ModelRef("Problema"))
 	                .build(),
 	            new ResponseMessageBuilder()
 	                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+	                .responseModel(new ModelRef("Problema"))
 	                .message("Erro interno no servidor")
 	                .build(),
 	            new ResponseMessageBuilder()
@@ -108,6 +113,7 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	                .build(),
 	            new ResponseMessageBuilder()
 	                .code(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+	                .responseModel(new ModelRef("Problema"))
 	                .message("Requisição recusada porque o corpo está em um formato não suportado")
 	                .build()
 	        );
@@ -118,10 +124,12 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 	    return Arrays.asList(
 	            new ResponseMessageBuilder()
 	                .code(HttpStatus.BAD_REQUEST.value())
+	                .responseModel(new ModelRef("Problema"))
 	                .message("Requisição inválida (erro do cliente)")
 	                .build(),
 	            new ResponseMessageBuilder()
 	                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+	                .responseModel(new ModelRef("Problema"))
 	                .message("Erro interno no servidor")
 	                .build()
 	        );
