@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.assembler.GrupoDtoInputDisassembler;
+import com.food.api.controller.openapi.GrupoControllerOpenApi;
 import com.food.api.dto.GrupoDto;
 import com.food.api.dto.input.GrupoDtoInput;
 import com.food.domain.model.Grupo;
@@ -25,7 +26,7 @@ import com.food.domain.service.CadastroGrupoService;
 
 @RestController
 @RequestMapping("/grupos")
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi{
 
 	private static final Class<GrupoDto> GRUPO_DTO_CLASS = GrupoDto.class;
 	
@@ -62,7 +63,7 @@ public class GrupoController {
 	
 	
 	@PutMapping("/{id}")
-	public GrupoDto atuaizar(@PathVariable Long id, @RequestBody @Valid GrupoDtoInput grupoInput) {
+	public GrupoDto atualizar(@PathVariable Long id, @RequestBody @Valid GrupoDtoInput grupoInput) {
 		
 		Grupo grupoAtual = cadastroGrupoService.buscar(id);
 		

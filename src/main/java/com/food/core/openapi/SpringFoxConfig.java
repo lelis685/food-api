@@ -49,7 +49,10 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 			        .globalResponseMessage(RequestMethod.DELETE, globalDeleteResponseMessages())
 			        .additionalModels(typeResolver.resolve(ApiError.class))
 					.apiInfo(apiInfo())
-					.tags(new Tag("Cidades", "Gerencia as cidades"));
+					.tags(
+							new Tag("Cidades", "Gerencia as cidades"),
+							new Tag("Grupos", "Gerencia os grupos de usuários")
+							);
 	}
 	
 
@@ -78,11 +81,12 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 		return Arrays.asList(
 				new ResponseMessageBuilder()
 					.code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-					 .responseModel(new ModelRef("Problema"))
+					.responseModel(new ModelRef("Problema"))
 					.message("Erro interno do servidor")
 					.build(),
 				new ResponseMessageBuilder()
 					.code(HttpStatus.NOT_FOUND.value())
+					.responseModel(new ModelRef("Problema"))
 					.message("Recurso não encontrado")
 					.build(),
 				new ResponseMessageBuilder()

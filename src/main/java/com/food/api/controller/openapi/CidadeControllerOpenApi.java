@@ -29,13 +29,16 @@ public interface CidadeControllerOpenApi {
 
 	
 	@ApiOperation(value = "Cadastra uma cidade")
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "Cidade cadastrada"),
+	})
 	public CidadeDto adicionar(
 			@ApiParam(name = "corpo", value = "Representação de uma nova cidade") CidadeDtoInput cidadeInput);
 
 	
 	@ApiOperation(value = "Atualiza uma cidade por id")
 	@ApiResponses({ 
-		@ApiResponse(code = 200, message = "Cidade cadastrada"),
+		@ApiResponse(code = 200, message = "Cidade atualizada"),
 		@ApiResponse(code = 404, message = "Cidade não encontrada", response = ApiError.class) })
 	public CidadeDto atualizar(
 			@ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados") CidadeDtoInput cidadeInput,
