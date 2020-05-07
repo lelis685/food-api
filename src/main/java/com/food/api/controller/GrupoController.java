@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.assembler.GrupoDtoInputDisassembler;
-import com.food.api.controller.openapi.GrupoControllerOpenApi;
 import com.food.api.dto.GrupoDto;
 import com.food.api.dto.input.GrupoDtoInput;
+import com.food.api.openapi.controller.GrupoControllerOpenApi;
 import com.food.domain.model.Grupo;
 import com.food.domain.service.CadastroGrupoService;
 

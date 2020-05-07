@@ -1,4 +1,4 @@
-package com.food.api.controller.openapi;
+package com.food.api.openapi.controller;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public interface GrupoControllerOpenApi {
 	public GrupoDto buscar(@ApiParam(value = "ID de um grupo", example = "1") Long id);
 	
 	
-	@ApiOperation(value = "Realiza cadastro um grupo")
+	@ApiOperation(value = "Realiza cadastro de um grupo")
 	@ApiResponses(
 			@ApiResponse(code = 201, message = "Grupo cadastrado")
 			)
@@ -46,7 +46,7 @@ public interface GrupoControllerOpenApi {
 			);
 	
 	
-	@ApiOperation(value = "Exclui grupo por ID")
+	@ApiOperation(value = "Exclui um grupo por ID")
 	@ApiResponses({
 			@ApiResponse(code = 204, message = "Grupo excluído"),
 			@ApiResponse(code = 404, message = "Grupo não encontrado",  response = ApiError.class)

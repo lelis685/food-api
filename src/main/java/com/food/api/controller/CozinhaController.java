@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +24,14 @@ import com.food.api.assembler.CozinhaDtoInputDisassembler;
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.CozinhaDto;
 import com.food.api.dto.input.CozinhaDtoInput;
+import com.food.api.openapi.controller.CozinhaControllerOpenApi;
 import com.food.domain.model.Cozinha;
 import com.food.domain.repository.CozinhaRepository;
 import com.food.domain.service.CadastroCozinhaService;
 
 @RestController
-@RequestMapping(value = "/cozinhas")
-public class CozinhaController {
+@RequestMapping(path = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaController implements CozinhaControllerOpenApi{
 	
 	private static final Class<CozinhaDto> COZINHA_DTO_CLASS = CozinhaDto.class;
 
@@ -45,11 +47,6 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaDtoInputDisassembler cozinhaDtoInputDisassembler;
 	
-
-	@GetMapping(params = "nome")
-	public List<CozinhaDto> buscarPorNome(String nome) {
-		return assembler.toCollectionRepresentationModel(cozinhaRepository.findByNomeContaining(nome), COZINHA_DTO_CLASS);
-	}
 
 	@GetMapping
 	public Page<CozinhaDto> listar(Pageable pageable) {

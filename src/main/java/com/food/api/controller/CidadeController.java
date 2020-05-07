@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.api.assembler.CidadeDtoInputDisassembler;
 import com.food.api.assembler.GenericDtoAssembler;
-import com.food.api.controller.openapi.CidadeControllerOpenApi;
 import com.food.api.dto.CidadeDto;
 import com.food.api.dto.input.CidadeDtoInput;
+import com.food.api.openapi.controller.CidadeControllerOpenApi;
 import com.food.domain.exception.EstadoNaoEncontradoException;
 import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Cidade;
@@ -96,6 +96,7 @@ public class CidadeController implements CidadeControllerOpenApi{
 	public void remover(@PathVariable Long cidadeId) {
 		cadastroCidade.excluir(cidadeId);
 	}
+
 
 
 }
