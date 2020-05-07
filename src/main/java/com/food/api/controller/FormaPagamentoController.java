@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +27,13 @@ import com.food.api.assembler.FormaPagamentoDtoInputDisassembler;
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.FormaPagamentoDto;
 import com.food.api.dto.input.FormaPagamentoDtoInput;
+import com.food.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.food.domain.model.FormaPagamento;
 import com.food.domain.service.CadastroFormaPagamentoService;
 
 @RestController
-@RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+@RequestMapping(path = "/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi{
 
 	private static final Class<FormaPagamentoDto> FORMA_PAGAMENTO_DTO_CLASS = FormaPagamentoDto.class;
 

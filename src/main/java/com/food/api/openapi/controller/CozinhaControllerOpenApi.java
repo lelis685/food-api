@@ -39,7 +39,6 @@ public interface CozinhaControllerOpenApi {
 	
 	@ApiOperation("Atualiza uma cozinha por ID")
 	@ApiResponses({
-		@ApiResponse(code = 400, message = "ID da cozinha inválido", response = ApiError.class),
 		@ApiResponse(code = 404, message = "Cozinha não encontrada", response = ApiError.class),
 		@ApiResponse(code = 200, message = "Cozinha atualizada"),
 	})

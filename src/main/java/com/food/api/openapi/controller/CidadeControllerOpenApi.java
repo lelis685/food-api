@@ -56,7 +56,8 @@ public interface CidadeControllerOpenApi {
 	@ApiOperation("Exclui uma cidade por ID")
 	@ApiResponses({
 		@ApiResponse(code = 204, message = "Cidade excluída"),
-		@ApiResponse(code = 404, message = "Cidade não encontrada", response = Problem.class)
+		@ApiResponse(code = 404, message = "Cidade não encontrada", response = Problem.class),
+		@ApiResponse(code = 400, message = "ID da cidade inválido", response = Problem.class)
 	})
 	public void remover(
 			@ApiParam(value = "ID de uma cidade", example = "1")
