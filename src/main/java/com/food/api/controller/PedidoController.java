@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import com.food.api.assembler.PedidoDtoInputDisassembler;
 import com.food.api.dto.PedidoDto;
 import com.food.api.dto.PedidoResumoDto;
 import com.food.api.dto.input.PedidoDtoInput;
+import com.food.api.openapi.controller.PedidoCntrollerOpenApi;
 import com.food.core.data.PageableTranslator;
 import com.food.domain.exception.EntidadeNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
@@ -35,8 +37,8 @@ import com.google.common.collect.ImmutableMap;
 
 
 @RestController
-@RequestMapping("/pedidos")
-public class PedidoController {
+@RequestMapping(path = "/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class PedidoController implements PedidoCntrollerOpenApi{
 
 	private static final Class<PedidoDto> PEDIDO_DTO_CLASS = PedidoDto.class;
 	private static final Class<PedidoResumoDto> PEDIDO_RESUMO_DTO_CLASS = PedidoResumoDto.class;
@@ -55,6 +57,7 @@ public class PedidoController {
 
 	@Autowired
 	private PedidoDtoInputDisassembler disassembler;
+
 
 	@GetMapping
 	public Page<PedidoResumoDto> listar(PedidoFilter filtro, Pageable pageable) {

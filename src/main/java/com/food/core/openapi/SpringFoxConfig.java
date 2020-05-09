@@ -16,9 +16,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.food.api.dto.CozinhaDto;
+import com.food.api.dto.PedidoResumoDto;
 import com.food.api.exceptionhandler.ApiError;
-import com.food.api.openapi.model.CozinhasModelOpenApi;
+import com.food.api.openapi.model.CozinhasDtoOpenApi;
 import com.food.api.openapi.model.PageableModelOpenApi;
+import com.food.api.openapi.model.PedidosResumoDtoOpenApi;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -61,13 +63,17 @@ public class SpringFoxConfig implements WebMvcConfigurer{
 			        .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 			        .alternateTypeRules(AlternateTypeRules.newRule(
 			        		typeResolver.resolve(Page.class, CozinhaDto.class), 
-			        		CozinhasModelOpenApi.class))
+			        		CozinhasDtoOpenApi.class))
+			        .alternateTypeRules(AlternateTypeRules.newRule(
+			        		typeResolver.resolve(Page.class, PedidoResumoDto.class),
+			        		PedidosResumoDtoOpenApi.class))
 					.apiInfo(apiInfo())
 					.tags(
 							new Tag("Cidades", "Gerencia as cidades"),
 							new Tag("Grupos", "Gerencia os grupos de usuários"),
 							new Tag("Cozinhas", "Gerencia as cozinhas"),
-							new Tag("Formas de pagamento", "Gerencia as formas de pagamento")
+							new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
+							new Tag("Pedidos", "Gerencia os pedidos")
 							);
 	}
 	
