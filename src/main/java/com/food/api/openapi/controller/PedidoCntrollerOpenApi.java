@@ -44,7 +44,7 @@ public interface PedidoCntrollerOpenApi {
 		@ApiResponse(code = 404, message = "Pedido não encontrado", response = ApiError.class)
 	})
 	public PedidoDto buscar(
-			@ApiParam(value = "Codigo de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55")
+			@ApiParam(value = "Codigo de um pedido", example = "f9981ca4-5a5e-4da3-af04-933861df3e55", required = true)
 			String codigoPedido);
 
 
@@ -54,7 +54,7 @@ public interface PedidoCntrollerOpenApi {
 		@ApiResponse(code = 201, message = "Pedido registrado"),
 	})
 	public PedidoDto emitir(
-			@ApiParam(name = "corpo", value = "Representação de um novo pedido")
+			@ApiParam(name = "corpo", value = "Representação de um novo pedido", required = true)
 			PedidoDtoInput pedidoInput);
 
 

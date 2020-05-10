@@ -55,7 +55,7 @@ public class GrupoController implements GrupoControllerOpenApi{
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public GrupoDto salvar(@Valid @RequestBody GrupoDtoInput grupoInput) {
+	public GrupoDto adicionar(@Valid @RequestBody GrupoDtoInput grupoInput) {
 		
 		Grupo grupo = diassembler.toDomainObject(grupoInput);
 		
@@ -76,7 +76,7 @@ public class GrupoController implements GrupoControllerOpenApi{
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void exluir(@PathVariable Long id) {
+	public void remover(@PathVariable Long id) {
 		cadastroGrupoService.excluir(id);
 	}
 	

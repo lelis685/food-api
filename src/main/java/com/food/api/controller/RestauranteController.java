@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.food.api.assembler.RestauranteDtoInputDisassembler;
 import com.food.api.dto.RestauranteDto;
 import com.food.api.dto.input.RestauranteDtoInput;
 import com.food.api.dto.view.RestauranteView;
+import com.food.api.openapi.controller.RestauranteControllerOpenApi;
 import com.food.domain.exception.CidadeNaoEncontradaException;
 import com.food.domain.exception.CozinhaNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
@@ -31,8 +33,8 @@ import com.food.domain.repository.RestauranteRepository;
 import com.food.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes")
-public class RestauranteController {
+@RequestMapping(path = "/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteController implements RestauranteControllerOpenApi{
 
 	private static final Class<RestauranteDto> RESTAURANTE_DTO_CLASS = RestauranteDto.class;
 
@@ -55,7 +57,6 @@ public class RestauranteController {
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
 		return assembler.toCollectionRepresentationModel(restaurantes, RESTAURANTE_DTO_CLASS);
 	}
-
 
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")

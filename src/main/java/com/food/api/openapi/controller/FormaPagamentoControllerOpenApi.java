@@ -29,7 +29,7 @@ public interface FormaPagamentoControllerOpenApi {
 		@ApiResponse(code = 400 , message = "ID da forma de pagamento inválido", response = ApiError.class)
 	})
 	public ResponseEntity<FormaPagamentoDto> bucar( 
-			@ApiParam(value = "ID de uma forma de pagamento", example = "1")
+			@ApiParam(value = "ID de uma forma de pagamento", example = "1", required = true)
 			Long id, 
 			ServletWebRequest request);
 
@@ -39,7 +39,7 @@ public interface FormaPagamentoControllerOpenApi {
 		@ApiResponse(code = 201 , message = "Forma de pagamento cadastrada")
 	})
 	public FormaPagamentoDto salvar(
-			@ApiParam(name = "corpo", value = "Representação de uma nova forma de pagamento")
+			@ApiParam(name = "corpo", value = "Representação de uma nova forma de pagamento", required = true)
 			FormaPagamentoDtoInput formaPagamentoInput );
 	
 	
@@ -49,9 +49,10 @@ public interface FormaPagamentoControllerOpenApi {
 		@ApiResponse(code = 404 , message = "Forma da pagamento não encontrada", response = ApiError.class)
 	})
 	public FormaPagamentoDto atualizar(
-			@ApiParam(value = "ID de uma forma de pagamento", example = "1")
+			@ApiParam(value = "ID de uma forma de pagamento", example = "1", required = true)
 			Long id, 
-			@ApiParam(name = "corpo", value = "Representação de uma forma de pagamento com novos dados")
+			
+			@ApiParam(name = "corpo", value = "Representação de uma forma de pagamento com novos dados", required = true)
 			FormaPagamentoDtoInput formaPagamentoInput);
 
 
@@ -62,7 +63,7 @@ public interface FormaPagamentoControllerOpenApi {
 		@ApiResponse(code = 400 , message = "ID da forma de pagamento inválido", response = ApiError.class)
 	})
 	public void excluir(
-			@ApiParam(value = "ID de uma forma de pagamento", example = "1")
+			@ApiParam(value = "ID de uma forma de pagamento", example = "1", required = true)
 			Long id);
 
 	
