@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,13 @@ import com.food.api.dto.UsuarioDto;
 import com.food.api.dto.input.SenhaDtoInput;
 import com.food.api.dto.input.UsuarioComSenhaDtoInput;
 import com.food.api.dto.input.UsuarioDtoInput;
+import com.food.api.openapi.controller.UsuarioControllerOpenApi;
 import com.food.domain.model.Usuario;
 import com.food.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping("/usuarios")
-public class UsuarioController {
+@RequestMapping(path = "/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UsuarioController implements UsuarioControllerOpenApi{
 
 	private static final Class<UsuarioDto> USUARIO_DTO_CLASS = UsuarioDto.class;
 
@@ -61,7 +63,7 @@ public class UsuarioController {
 
 
 	@PutMapping("/{id}")
-	public UsuarioDto buscar(@PathVariable Long id, @RequestBody @Valid UsuarioDtoInput usuarioInput){
+	public UsuarioDto atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioDtoInput usuarioInput){
 
 		Usuario usuarioAtual = cadastroUsuarioService.buscar(id);
 

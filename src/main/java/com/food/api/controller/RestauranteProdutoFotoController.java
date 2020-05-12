@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.FotoProdutoDto;
 import com.food.api.dto.input.FotoProdutoDtoInput;
+import com.food.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.food.domain.exception.EntidadeNaoEncontradaException;
 import com.food.domain.model.FotoProduto;
 import com.food.domain.model.Produto;
@@ -34,8 +36,8 @@ import com.food.domain.service.FotoStorageService;
 import com.food.domain.service.FotoStorageService.FotoRecuperada;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi{
 
 	private static final Class<FotoProdutoDto> FOTO_PRODUTO_DTO_CLASS = FotoProdutoDto.class;
 
@@ -51,24 +53,34 @@ public class RestauranteProdutoFotoController {
 	@Autowired
 	private GenericDtoAssembler<FotoProduto, FotoProdutoDto> assembler;
 
+	
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDto atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
-			@Valid FotoProdutoDtoInput fotoProdutoInput) throws IOException {
-
-		FotoProduto foto = criarFotoProduto(restauranteId, produtoId, fotoProdutoInput);
-		FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, fotoProdutoInput.getArquivo().getInputStream());
+			@Valid FotoProdutoDtoInput fotoProdutoInput,
+			@RequestPart(required = true)MultipartFile arquivo) throws IOException {
+		
+		Produto produto = cadastroProdutoService.buscar(restauranteId, produtoId);
+		
+		FotoProduto foto = new FotoProduto();
+		foto.setProduto(produto);
+		foto.setDescricao(fotoProdutoInput.getDescricao());
+		foto.setContentType(arquivo.getContentType());
+		foto.setTamanho(arquivo.getSize());
+		foto.setNomeArquivo(arquivo.getOriginalFilename());
+		
+		FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
 
 		return assembler.toRepresentationModel(fotoSalva, FOTO_PRODUTO_DTO_CLASS);
 	}
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping
 	public FotoProdutoDto buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		FotoProduto foto = catalogoFotoProdutoService.buscar(restauranteId, produtoId);
 		return assembler.toRepresentationModel(foto, FOTO_PRODUTO_DTO_CLASS);
 	}
 
-	@GetMapping
-	public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId,
+	@GetMapping(produces = MediaType.ALL_VALUE)
+	public ResponseEntity<?> servir(@PathVariable Long restauranteId,
 			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 		try {
 			FotoProduto foto = catalogoFotoProdutoService.buscar(restauranteId, produtoId);
@@ -118,17 +130,5 @@ public class RestauranteProdutoFotoController {
 
 	}
 
-	private FotoProduto criarFotoProduto(Long restauranteId, Long produtoId, FotoProdutoDtoInput fotoProdutoInput) {
-		Produto produto = cadastroProdutoService.buscar(restauranteId, produtoId);
-		MultipartFile arquivo = fotoProdutoInput.getArquivo();
-
-		FotoProduto foto = new FotoProduto();
-		foto.setProduto(produto);
-		foto.setContentType(arquivo.getContentType());
-		foto.setDescricao(fotoProdutoInput.getDescricao());
-		foto.setTamanho(arquivo.getSize());
-		foto.setNomeArquivo(arquivo.getOriginalFilename());
-		return foto;
-	}
 
 }

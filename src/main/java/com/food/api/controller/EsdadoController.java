@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,13 +21,14 @@ import com.food.api.assembler.EstadoDtoInputDisassembler;
 import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.dto.EstadoDto;
 import com.food.api.dto.input.EstadoDtoInput;
+import com.food.api.openapi.controller.EstadoControllerOpenApi;
 import com.food.domain.model.Estado;
 import com.food.domain.repository.EstadoRepository;
 import com.food.domain.service.CadastroEstadoService;
 
 @RestController
-@RequestMapping("/estados")
-public class EsdadoController {
+@RequestMapping(path = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
+public class EsdadoController implements EstadoControllerOpenApi {
 	
 	private static final Class<EstadoDto> ESTADO_DTO_CLASS = EstadoDto.class;
 	

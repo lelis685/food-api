@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +22,15 @@ import com.food.api.assembler.GenericDtoAssembler;
 import com.food.api.assembler.ProdutoDtoInputDisassembler;
 import com.food.api.dto.ProdutoDto;
 import com.food.api.dto.input.ProdutoDtoInput;
+import com.food.api.openapi.controller.RestauranteProdutoControllerOpenApi;
 import com.food.domain.model.Produto;
 import com.food.domain.model.Restaurante;
 import com.food.domain.service.CadastroProdutoService;
 import com.food.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos")
-public class RestauranteProdutoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi{
 
 	private static final Class<ProdutoDto> PRODUTO_DTO_CLASS = ProdutoDto.class;
 
@@ -58,7 +60,7 @@ public class RestauranteProdutoController {
 	}
 
 	@GetMapping("/{produtoId}")
-	public ProdutoDto listar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {	
+	public ProdutoDto buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {	
 		Produto produto = cadastroProdutoService.buscar(restauranteId, produtoId);
 		return assembler.toRepresentationModel(produto, PRODUTO_DTO_CLASS);
 	}
